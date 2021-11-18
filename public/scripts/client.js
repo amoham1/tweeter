@@ -23,23 +23,34 @@ $(document).ready(function() {
 
   const renderTweets = function(tweet) {
     // loops through tweets
-    for (let val of tweet){
+    for (let val of tweet){ 
     let new_tweet = createTweetElement(val);
-      $('.postTweet').append(new_tweet);
+      $('.tweet-Container').append(new_tweet);
     }
   }
   //renderTweets(tweetData);
 
   //  Form Submission using JQuery and AJAX
   $( "#tweetForm" ).submit(function( event ) {
-    console.log( $( this ).serialize() );
+
     event.preventDefault();
+    // this var gets the character that enter in text area 
+    let inputElement = $("#tweet-text");
+    let char = inputElement.val().length;
+    if(char === 0){
+      alert("Hey Please put in something into the tweet");
+      return 
+    }else if (char > 140) {
+      alert("Hey you hit max characters");
+      return
+    }
     $.ajax({
       type: "POST",
       url: '/tweets',
       data: $( this ).serialize(),
     }).then((result)=>{
-      loadTweets(result);
+      inputElement.val("")
+      loadTweets(result); 
     });
   });
 
@@ -50,7 +61,10 @@ $(document).ready(function() {
       
     }).then((data)=>{ //.then is the promise which means, when the Ajax Call is completed
       console.log("Data from AJAX",data);
-      renderTweets(data);
+      // //sort my tweet to post the news tweet at the top
+      // let sort =data.sort((a,b)=>b.created_at - a.created_at);
+      $(".tweet-Container").empty();
+      renderTweets(data.reverse());
     })
   }
   loadTweets();
