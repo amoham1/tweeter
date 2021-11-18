@@ -53,4 +53,16 @@ const renderTweets = function(tweet) {
   }
 }
 renderTweets(tweetData);
+
+//  Form Submission using JQuery and AJAX
+$( "#tweetForm" ).submit(function( event ) {
+  console.log( $( this ).serialize() );
+  event.preventDefault();
+  $.ajax({
+    type: "POST",
+    url: '/tweets',
+    data: $( this ).serialize(),
+  });
+});
+
 });
