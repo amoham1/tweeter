@@ -97,3 +97,12 @@
 .icons {
   font-size: 0.7em;
 }
+
+#errorID {
+  display: none;
+  border-style: solid;
+  border-color: crimson;
+  font: 1em sans-serif;
+  color: crimson;
+  text-align: center;
+}

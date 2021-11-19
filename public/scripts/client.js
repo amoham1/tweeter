@@ -5,17 +5,23 @@
  */
 
 $(document).ready(function() {
+  //This method is best suited if the tweet element was created as a string literal (not a jQuery object).
+  const escape = function (str) {
+    let div = document.createElement("div");
+    div.appendChild(document.createTextNode(str));
+    return div.innerHTML;
+  };
   // Test / driver code (temporary). Eventually will get this from the server.
   const createTweetElement = function(data){
     return ` <article class="tweets">
     <div class="tweetHeader">
-      <span class="avatar"><img src=${data.user.avatars}><span class="avatarname">${data.user.name}</span></span>
-      <span class="username">${data.user.handle}</span>
+      <span class="avatar"><img src=${escape(data.user.avatars)}><span class="avatarname">${escape(data.user.name)}</span></span>
+      <span class="username">${escape(data.user.handle)}</span>
     </div>
-    <p class="tweetInput">${data.content.text}</p>
+    <p class="tweetInput">${escape(data.content.text)}</p>
     <hr class="divider">
     <div class="tweetFooter">
-      <span class="timestamp">${timeago.format(data.created_at)}</span>
+      <span class="timestamp">${escape(timeago.format(data.created_at))}</span>
       <div class="icons"><i class="fas fa-book"></i><i class="fas fa-retweet"></i><i class="fas fa-heart"></i></div>
     </div>
   </article>`
@@ -38,10 +44,10 @@ $(document).ready(function() {
     let inputElement = $("#tweet-text");
     let char = inputElement.val().length;
     if(char === 0){
-      alert("Hey Please put in something into the tweet");
+      $("#errorID").slideDown().text("Error: you need to type something to tweet");
       return 
     }else if (char > 140) {
-      alert("Hey you hit max characters");
+      $("#errorID").slideDown().text("Error: Your tweet is too long PLZ shorten");
       return
     }
     $.ajax({
@@ -49,7 +55,8 @@ $(document).ready(function() {
       url: '/tweets',
       data: $( this ).serialize(),
     }).then((result)=>{
-      inputElement.val("")
+      inputElement.val("");
+      $('#tweet-text').siblings('.tweet-bottom').children('.child-node').children('.counter').text(140);
       loadTweets(result); 
     });
   });
